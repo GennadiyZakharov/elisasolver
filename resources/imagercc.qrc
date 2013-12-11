@@ -1,0 +1,18 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+  <file alias="accessories-calculator.png">images/accessories-calculator.png</file>
+  <file alias="application-exit.png">images/application-exit.png</file>
+  <file alias="document-open.png">images/document-open.png</file>
+  <file alias="document-save.png">images/document-save.png</file>
+  <file alias="document-save-as.png">images/document-save-as.png</file>
+  <file alias="document-save-all.png">images/document-save-all.png</file>
+  <file alias="dialog-close.png">images/dialog-close.png</file>
+  <file alias="edit-copy.png">images/edit-copy.png</file>
+  <file alias="help-about.png">images/help-about.png</file>
+  <file alias="help-contents.png">images/help-contents.png</file>
+  <file alias="kspread.png">images/kspread.png</file>
+  <file alias="run-build-install.png">images/run-build-install.png</file>
+  <file alias="story-editor.png">images/story-editor.png</file>
+</qresource>
+</RCC>
+

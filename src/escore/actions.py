@@ -1,0 +1,37 @@
+'''
+Created on 03.11.2013
+
+@author: gena
+'''
+from PyQt4 import QtGui
+
+'''
+Some simple procedures to help me deal with actions
+'''
+
+def createAction(target, text, shortcut=None, icon=None,    
+                 tip=None, checkable=False):
+    '''
+    Create action with text, icon, e.t.c., owned by target
+    '''
+    action = QtGui.QAction(text, target)
+    if shortcut is not None:
+        action.setShortcut(shortcut)
+    if icon is not None:
+        action.setIcon(QtGui.QIcon(":/{}.png".format(icon)))
+    if tip is not None:
+        action.setToolTip(tip)
+        action.setStatusTip(tip)
+    if checkable:
+        action.setCheckable(True)
+    return action
+
+def addActions(target, actions):
+    '''
+    Add all actions to the QObject target
+    '''
+    for action in actions:
+        if action is not None:
+            target.addAction(action)
+        else:
+            target.addSeparator()
