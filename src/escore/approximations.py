@@ -135,7 +135,7 @@ class Logistic5(Approximation):
     5-parametric  logistic function approximation
     '''  
     name = '5PL'
-    referenceCount = -5
+    referenceCount = 5
     
     def evalFunc(self, x, p):
         A,B,C,D,E = p

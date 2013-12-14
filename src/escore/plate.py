@@ -218,7 +218,7 @@ class Plate(QtCore.QObject):
         if len(x)<self.approximation.referenceCount :
             print('Reference list is too short ',len(x))
             print('Need at least ',self.approximation.referenceCount)
-            return
+            return None
         x = np.array(x)
         y = np.array(y)
         self.approximation.fitPvals(x,y)

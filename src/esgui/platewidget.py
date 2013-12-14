@@ -124,7 +124,8 @@ class PlateWidget(QtGui.QTableWidget):
          
     def fitCoefficients(self):
         plot = self.plate.fitCoefficients()
-        plot.show()
+        if plot is not None:
+            plot.show()
         #plot.figure.canvas.manager.window.activateWindow()
          
     def calculateConcentrations(self):
