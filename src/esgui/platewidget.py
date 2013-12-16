@@ -63,15 +63,19 @@ class PlateWidget(QtGui.QTableWidget):
         
     def setWell(self, row,column):
         well = self.plate[row,column]
-        caption = 'a:{:6.3f}\n'.format(well.absorbanse)
-        if not isnan(well.concentration) :
-            caption += 'c:{:6.3f}'.format(well.concentration)
-            if well.wellType == Well.wellTypeReference :
-                color = QtGui.QColor(220,255,220)
+        if not isnan(well.absorbanse) :
+            caption = 'a:{:6.3f}\n'.format(well.absorbanse)
+            if not isnan(well.concentration) :
+                caption += 'c:{:6.3f}'.format(well.concentration)
+                if well.wellType == Well.wellTypeReference :
+                    color = QtGui.QColor(200,255,200)
+                else :
+                    color = QtGui.QColor(200,200,255)
             else :
-                color = QtGui.QColor(220,220,255)
-        else :
-            color = QtGui.QColor(255,255,220)
+                color = QtGui.QColor(255,255,200)   
+        else:
+            caption = 'Empty'
+            color = QtGui.QColor(255,255,255)
         item = QtGui.QTableWidgetItem(caption)
         item.setBackgroundColor(color)
         self.setItem(row,column,item)
@@ -111,15 +115,18 @@ class PlateWidget(QtGui.QTableWidget):
             self.plate[row,column]=wellWidget.getWell()    
     
     def editMultipleWels(self):
-        indexes = self.selectedIndexes()
-        if indexes == []:
+        indexes = []
+        #Excluding empty wells
+        for qModelIndex in self.selectedIndexes() :
+            row,column = qModelIndex.row(),qModelIndex.column()
+            if not self.plate.isWellEmpty(row,column):
+                indexes.append((row,column))
+        if len(indexes) == 0:
             return
-        index = indexes[0]
-        row,column = index.row(),index.column()
+        row,column = indexes[0]
         wellWidget = WellWidget(self.plate[row,column],self)
         if wellWidget.exec_():
-            for index in indexes :
-                row,column = index.row(),index.column()
+            for row,column in indexes :
                 self.plate[row,column]=wellWidget.getWell()
          
     def fitCoefficients(self):

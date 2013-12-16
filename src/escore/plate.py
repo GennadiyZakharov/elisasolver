@@ -51,11 +51,16 @@ class Plate(QtCore.QObject):
         '''
         Store esWell in plate
         '''
+        if self.isWellEmpty(*index):
+            return
         if well.wellType == Well.wellTypeReference :
             self.reference[index]=well.concentration
         else:
             self.reference.remove(index)
         self.signalWellUpdated.emit(*index)
+    
+    def isWellEmpty(self, row,column):
+        return np.isnan(self.absorbanses[row,column])
     
     def resetApproximation(self):
         '''
@@ -94,7 +99,8 @@ class Plate(QtCore.QObject):
         if caption.startswith(cls.inputTitle) :
             print('Loading plate from txt')
             plateNumber = 1
-            absorbanses = np.zeros(cls.plateSize)
+            absorbanses = np.empty(cls.plateSize)
+            absorbanses[:]=np.NAN
             plates = []
             print('parsing plate',plateNumber)
             while True:
@@ -103,6 +109,8 @@ class Plate(QtCore.QObject):
                 if isEndFile or (int(line[0])>plateNumber) : # writing plate record
                     plate = cls(absorbanses)
                     plates.append(plate)
+                    print('Loaded plate absorbances')
+                    print(absorbanses)
                     if isEndFile:
                         break
                     plateNumber+=1
@@ -235,7 +243,8 @@ class Plate(QtCore.QObject):
         print('Calculating concentrations:')
         for row in range(self.plateSizeRows):
             for column in range(self.plateSizeColumns):
-                self.concentrations[row,column]=self.approximation.invEval(self.absorbanses[row,column])
+                if not self.isWellEmpty(row, column) :
+                    self.concentrations[row,column]=self.approximation.invEval(self.absorbanses[row,column])
         
         self.dirty = True
         self.signalPlateUpdated.emit()
