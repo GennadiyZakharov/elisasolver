@@ -85,6 +85,7 @@ class Plate(QtCore.QObject):
         return np.loadtxt(c,delimiter=';')
     
     @classmethod
+    @QtCore.pyqtSlot(QtCore.QString)
     def loadFromFile(cls, fileName):
         '''
         Read plate file and return list of plate records, or empty list if reading was unsucsessfull
@@ -94,7 +95,7 @@ class Plate(QtCore.QObject):
             row = ord(line[0])-ord('A')
             return row,column
         
-        plateFile = open(fileName)
+        plateFile = open(unicode(fileName))
         caption = plateFile.readline().strip()
         if caption.startswith(cls.inputTitle) :
             print('Loading plate from txt')
@@ -157,12 +158,13 @@ class Plate(QtCore.QObject):
         else :
             return []
     
+    @QtCore.pyqtSlot(QtCore.QString)
     def saveToFile(self, fileName):
         '''
         Save plate to ElisaSolver csv
         '''
         print('Saving plate to file: ',fileName)
-        plateFile = open(fileName, 'w')
+        plateFile = open(unicode(fileName), 'w')
         plateFile.write(self.outputTitle+'\n\n')
         plateFile.write('Raw absorbanses data:\n')
         numbers = ';'.join(['{:8}'.format(i+1) for i in range(12)])+'\n'
@@ -248,16 +250,18 @@ class Plate(QtCore.QObject):
         
         self.dirty = True
         self.signalPlateUpdated.emit()
-        
+    
+    @QtCore.pyqtSlot(QtCore.QString)
     def openReference(self, fileName):
-        referenceFile = open(fileName)
+        referenceFile = open(unicode(fileName))
         reference = Reference.loadFromFile(referenceFile)
         if reference is not None :
             self.setReference(reference)
         referenceFile.close()
     
+    @QtCore.pyqtSlot(QtCore.QString)
     def saveReference(self, fileName):
-        referenceFile = open(fileName,'w')
+        referenceFile = open(unicode(fileName),'w')
         self.reference.saveToFile(referenceFile)
         referenceFile.close()
     
