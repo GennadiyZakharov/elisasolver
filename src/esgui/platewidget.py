@@ -60,6 +60,7 @@ class PlateWidget(QtGui.QTableWidget):
         self.addAction(setWellTypeAction)
         self.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.setPlate(None)
+        self.plot = None
         
     def setWell(self, row,column):
         well = self.plate[row,column]
@@ -83,11 +84,17 @@ class PlateWidget(QtGui.QTableWidget):
     def saveToFile(self,fileName):
         self.plate.saveToFile(fileName)
     
+    def closePlot(self):
+        if self.plot is not None:
+            self.plot.close()
+            self.plot = None
+    
     def setPlate(self, plate):
         if self.plate is not None:
             self.plate.signalPlateUpdated.disconnect()
             self.plate.signalWellUpdated.disconnect()
             self.plate.signalApproximationFitted.disconnect()
+            self.closePlot()
         self.clearContents()
         self.plate = plate 
         self.setEnabled(self.plate is not None)
@@ -130,10 +137,11 @@ class PlateWidget(QtGui.QTableWidget):
                 self.plate[row,column]=wellWidget.getWell()
          
     def fitCoefficients(self):
-        plot = self.plate.fitCoefficients()
-        if plot is not None:
-            plot.show()
-        #plot.figure.canvas.manager.window.activateWindow()
+        self.closePlot()
+        self.plot = self.plate.fitCoefficients()
+        if self.plot is not None:
+            self.plot.show()
+            #plot.figure.canvas.manager.window.activateWindow()
          
     def calculateConcentrations(self):
         self.plate.calculateConcentrations()   
