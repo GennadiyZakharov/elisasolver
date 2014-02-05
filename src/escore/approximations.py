@@ -69,9 +69,16 @@ class Approximation(object):
         self.p,cov,infodict,mesg,ier = leastsq(residualsAbs,self.p,args=(x,y),
                                           full_output=True)
         print('Fitted coefficients: ',self.p)
-        ss_err=(infodict['fvec']**2).sum()
-        ss_tot=((y-y.mean())**2).sum()
-        self.rsquared=1-(ss_err/ss_tot)
+        # chi^2
+        ssres=0
+        sstot=0
+        ymean=y.mean()
+        for xi,yi in zip(x,y) :
+            ssres += (yi-self.eval(xi))**2
+            sstot += (yi-ymean)**2
+        
+        self.chi2 = 1-ssres/sstot
+        #
         maxx=max(x)
         minx=min(x)
         xsize=maxx-minx
@@ -80,7 +87,7 @@ class Approximation(object):
         xx=np.linspace(minx, maxx, 50)
         plt.plot(xx,self.eval(xx),'-',x,y,'o')
         plt.xlim((xstart, xstop))
-        plt.title('Least-squares {} fit, R^2={:.3f}'.format(self.name,self.rsquared))
+        plt.title('Least-squares {} fit, chi^2={:.3f}'.format(self.name,self.chi2))
         plt.legend([self.name+' fit', 'Reference'], loc='upper left')
         params = ascii_uppercase[:len(self.p)]
         ycor = max(y)
